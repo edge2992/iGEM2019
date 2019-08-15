@@ -35,16 +35,6 @@ def main():
     fig.show()
 
 
-    # plt.subplots(2, 1, 1)
-    # plt.imshow(G1)
-    # plt.legend()
-    #
-    # plt.subplots(2, 1, 2)
-    # plt.imshow(G2)
-    # plt.legend()
-    # plt.show()
-
-
 if __name__ == "__main__":
     main()
 
