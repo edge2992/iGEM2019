@@ -37,3 +37,4 @@ print(search(25, 25, 25, 50))
 fig, ax = plt.subplots()
 ax.imshow(grid)
 plt.show()
+
