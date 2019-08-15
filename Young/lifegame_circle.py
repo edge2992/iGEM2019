@@ -7,7 +7,15 @@ import numpy as np
 from scipy import signal
 import cv2
 
+from dots import Make_circle, Make_around
+
+mask_inner = Make_circle()
+mask_outer = Make_around(5, 10)
+
 mask = np.ones((4, 4), dtype=int)
+
+w1 = 1.0
+w2 = -0.3
 
 
 def init_state(width, height, init_alive_prob=0.5):
@@ -16,14 +24,27 @@ def init_state(width, height, init_alive_prob=0.5):
     return v.reshape(height, width)
 
 
-def count_neighbor(F):
-    return signal.correlate2d(F, mask, mode="same", boundary="wrap")
+def count_inner_neighbor(F):
+    return count_neighbor(F, mask_inner)
+
+
+def count_outer_neighbor(F):
+    return count_neighbor(F, mask_outer)
+
+
+def count_neighbor(F, mask_type):
+    return signal.correlate2d(F, mask_type, mode="same", boundary="wrap")
+
+# def count_neighbor(F):
+#     return signal.correlate2d(F, mask, mode="same", boundary="wrap")
 
 
 def next_generation(F):
-    N = count_neighbor(F)
-    # G = np.array(N == 3, dtype=int) + F * np.array(N == 4, dtype=int)
-    G = (N == 3) + F * (N == 4)
+    # N = count_neighbor(F)
+    # # G = np.array(N == 3, dtype=int) + F * np.array(N == 4, dtype=int)
+    # G = (N == 3) + F * (N == 4)
+    N = count_inner_neighbor(F) * w1 + count_outer_neighbor(F) * w2
+    G = N > 0
     return G
 
 
