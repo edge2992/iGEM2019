@@ -1,3 +1,7 @@
+# 参考
+# https://qiita.com/sage-git/items/c6c175887faa4cf737fb
+# opencvで描画する
+
 import sys
 import numpy as np
 from scipy import signal
