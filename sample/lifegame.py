@@ -7,12 +7,12 @@ import numpy as np
 from scipy import signal
 import cv2
 
-mask = np.ones((3, 3), dtype=int)
+mask = np.ones((4, 4), dtype=int)
 
 
 def init_state(width, height, init_alive_prob=0.5):
     N = width*height
-    v = np.array(np.random.rand(N) +  init_alive_prob, dtype=int)
+    v = np.array(np.random.rand(N) + init_alive_prob, dtype=int)
     return v.reshape(height, width)
 
 
@@ -58,7 +58,6 @@ def main():
         if ret == ord('l'):
             if os.path.exists("save.txt"):
                 F = np.loadtxt("save.txt")
-
     cv2.destroyAllWindows()
 
 
