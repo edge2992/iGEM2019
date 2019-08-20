@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 
 
 def zero_one(image):
-    output_width = 150
-    font_aspext = 1.8
+    output_width = 300
+    # font_aspext = 1.8
+    font_aspext = 1.0
     ikichi = 180
 
     im_gray = cv2.imread(image, 0)
