@@ -8,7 +8,7 @@ from scipy import signal
 import cv2
 
 from dots import Make_circle, Make_around
-from imshow_wrap import closeable_imshow
+# from imshow_wrap import closeable_imshow
 
 mask_inner = Make_circle(side=21, radius=2)
 mask_outer = Make_around(2, 4)
@@ -53,7 +53,7 @@ def to_image(F, scale=3.0):
     img = np.array(F, dtype=np.uint8)*255
     W = int(F.shape[1]*scale)
     H = int(F.shape[0]*scale)
-    img = cv2.resize(img, ((int)(W/2), (int)(H/2)), interpolation=cv2.INTER_NEAREST)
+    img = cv2.resize(img, (W, H), interpolation=cv2.INTER_NEAREST)
     return img
 
 
@@ -63,18 +63,18 @@ def main():
     ret = 0
     wait = 50
     while True:
-        img = to_image(F, scale=5.0)
+        img = to_image(F, scale=800/F.shape[1])
         cv2.imshow("test", img)
-        prop_val = cv2.getWindowProperty('image', cv2.WND_PROP_ASPECT_RATIO)
         ret = cv2.waitKey(wait)
         F = next_generation(F)
+        prop_val = cv2.getWindowProperty('test', cv2.WND_PROP_ASPECT_RATIO)
         if ret == ord('r'):
             F = init_state(300, 300, init_alive_prob=p)
         if ret == ord('s'):
             wait = min(wait*2, 1000)
         if ret == ord('f'):
             wait = max(wait//2, 10)
-        if ret == ord('q') or ret == 27:
+        if ret == ord('q') or ret == 27 or (prop_val < 0):
             break
         if ret == ord('w'):
             np.savetxt("../data/save.txt", F, "%d")
