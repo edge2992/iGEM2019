@@ -27,25 +27,11 @@ def zero_one(image):
     ret, th = cv2.threshold(im_resized, ikichi, 255, cv2.THRESH_BINARY)
 
     th[th != 0] = 1
-
-    # print(th)
-    # print(type(th))
-
     # 画像を表示
     plt.imshow(th)
     plt.show()
-
-    # write.txtに出力
-    f = open("img/write.txt", "w")
-    for array in th:  # 各行について
-        row = map(str, array)
-        line = "".join(row)
-        line.replace("[", "")
-        line.replace("]", "")
-        line.replace(" ", "")  # 強引ですみませんm(_ _)m
-        f.write(line)
-        f.write("\n")
-    f.close()  # 閉じる
+    # print(type(th))
+    np.savetxt("../data/save.txt", th, "%d")
     print("Complete")
 
 

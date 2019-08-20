@@ -60,14 +60,14 @@ def main():
     p = 0.08
     F = init_state(300, 300, init_alive_prob=p)
     ret = 0
-    wait = 30
+    wait = 50
     while True:
         img = to_image(F, scale=5.0)
         cv2.imshow("test", img)
         ret = cv2.waitKey(wait)
         F = next_generation(F)
         if ret == ord('r'):
-            F = init_state(100, 100, init_alive_prob=p)
+            F = init_state(300, 300, init_alive_prob=p)
         if ret == ord('s'):
             wait = min(wait*2, 1000)
         if ret == ord('f'):
@@ -75,10 +75,10 @@ def main():
         if ret == ord('q') or ret == 27:
             break
         if ret == ord('w'):
-            np.savetxt("save.txt", F, "%d")
+            np.savetxt("../data/save.txt", F, "%d")
         if ret == ord('l'):
-            if cv2.os.path.exists("save.txt"):
-                F = np.loadtxt("save.txt")
+            if cv2.os.path.exists("../data/save.txt"):
+                F = np.loadtxt("../data/save.txt")
     cv2.waitKey() #macの都合
     cv2.destroyAllWindows()
 
