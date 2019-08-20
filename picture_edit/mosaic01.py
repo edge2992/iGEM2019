@@ -3,15 +3,26 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+
+def trim(img):
+    height = img.shape[0]
+    width = img.shape[1]
+    image6 = img[100:height-40, 100:width-40]
+    return image6
 
 
 def zero_one(image):
-    output_width = 300
+    output_width = 800
     # font_aspext = 1.8
     font_aspext = 1.0
     ikichi = 180
 
     im_gray = cv2.imread(image, 0)
+    im_gray = trim(im_gray)
+
+    # 倍率を指定
+    # im_gray = cv2.resize(im_gray, 0.5, 0.5)
     if im_gray is None:
         # 読み込みに失敗した場合は None が返る。
         print('failed to load image.')

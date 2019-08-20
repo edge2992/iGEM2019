@@ -8,9 +8,10 @@ from scipy import signal
 import cv2
 
 from dots import Make_circle, Make_around
+from imshow_wrap import closeable_imshow
 
-mask_inner = Make_circle(side=21, radius=3)
-mask_outer = Make_around(3, 6)
+mask_inner = Make_circle(side=21, radius=2)
+mask_outer = Make_around(2, 4)
 
 mask = np.ones((4, 4), dtype=int)
 
@@ -64,6 +65,7 @@ def main():
     while True:
         img = to_image(F, scale=5.0)
         cv2.imshow("test", img)
+        prop_val = cv2.getWindowProperty('image', cv2.WND_PROP_ASPECT_RATIO)
         ret = cv2.waitKey(wait)
         F = next_generation(F)
         if ret == ord('r'):
@@ -81,6 +83,9 @@ def main():
                 F = np.loadtxt("../data/save.txt")
     cv2.waitKey() #macの都合
     cv2.destroyAllWindows()
+    # closeable_imshow("test", img)
+    cv2.waitKey(1)  # macの都合
+    return 0
 
 
 if __name__ == "__main__":
