@@ -9,8 +9,8 @@ import cv2
 
 from dots import Make_circle, Make_around
 
-mask_inner = Make_circle()
-mask_outer = Make_around(5, 10)
+mask_inner = Make_circle(side=21, radius=3)
+mask_outer = Make_around(3, 6)
 
 mask = np.ones((4, 4), dtype=int)
 
@@ -52,15 +52,15 @@ def to_image(F, scale=3.0):
     img = np.array(F, dtype=np.uint8)*255
     W = int(F.shape[1]*scale)
     H = int(F.shape[0]*scale)
-    img = cv2.resize(img, (W, H), interpolation=cv2.INTER_NEAREST)
+    img = cv2.resize(img, ((int)(W/2), (int)(H/2)), interpolation=cv2.INTER_NEAREST)
     return img
 
 
 def main():
     p = 0.08
-    F = init_state(100, 100, init_alive_prob=p)
+    F = init_state(300, 300, init_alive_prob=p)
     ret = 0
-    wait = 10
+    wait = 30
     while True:
         img = to_image(F, scale=5.0)
         cv2.imshow("test", img)
@@ -77,8 +77,9 @@ def main():
         if ret == ord('w'):
             np.savetxt("save.txt", F, "%d")
         if ret == ord('l'):
-            if os.path.exists("save.txt"):
+            if cv2.os.path.exists("save.txt"):
                 F = np.loadtxt("save.txt")
+    cv2.waitKey() #macの都合
     cv2.destroyAllWindows()
 
 
