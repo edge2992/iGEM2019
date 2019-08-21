@@ -9,6 +9,8 @@ def trim(img):
     height = img.shape[0]
     width = img.shape[1]
     image6 = img[100:height-40, 100:width-40]
+    print(image6.shape[0])
+    print(image6.shape[1])
     return image6
 
 
@@ -19,7 +21,7 @@ def zero_one(image):
     ikichi = 180
 
     im_gray = cv2.imread(image, 0)
-    im_gray = trim(im_gray)
+    # im_gray = trim(im_gray)
 
     # 倍率を指定
     # im_gray = cv2.resize(im_gray, 0.5, 0.5)
