@@ -10,8 +10,8 @@ import cv2
 from dots import Make_circle, Make_around
 # from imshow_wrap import closeable_imshow
 
-mask_inner = Make_circle(side=21, radius=2)
-mask_outer = Make_around(2, 4)
+mask_inner = Make_circle(side=21, radius=3)
+mask_outer = Make_around(3, 6)
 
 mask = np.ones((4, 4), dtype=int)
 
