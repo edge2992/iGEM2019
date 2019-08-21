@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def Make_circle(side=20, radius=5):
+def Make_circle(radius=5, side=20):
     grid = np.zeros((side, side))
 
     a = np.array([(side-1)/2, (side-1)/2])
@@ -17,9 +17,17 @@ def Make_circle(side=20, radius=5):
 
 
 def Make_around(r1, r2, side=20):
-    grid = Make_circle(side, r2)
-    grid = grid - Make_circle(side, r1)
+    grid = Make_circle(r2, side)
+    grid = grid - Make_circle(r1, side)
     return grid
+
+
+def Make_mask(r1, r2, w1, w2, side=21):
+    __grid = np.zeros((side, side))
+    __grid += w1 * Make_circle(r1, side)
+    __grid += w2 * Make_around(r1, r2, side)
+    return __grid
+
 
 
 def main():

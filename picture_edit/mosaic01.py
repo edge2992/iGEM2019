@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
+
 def trim(img):
     height = img.shape[0]
     width = img.shape[1]
