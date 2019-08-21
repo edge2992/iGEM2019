@@ -19,7 +19,7 @@ def save(F, dir):
 
 def main():
     F = np.loadtxt("../data/save.txt")
-    F = make_blank(F, 20, 5)
+    F = make_blank(F, 40, 5)
     plt.imshow(F)
     plt.show()
     # print(type(F))
