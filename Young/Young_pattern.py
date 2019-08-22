@@ -2,6 +2,7 @@ import numpy as np
 from scipy import signal
 import cv2
 from Young.dots import Make_mask
+import matplotlib.pyplot as plt
 
 
 class Young_Pattern:
@@ -83,6 +84,13 @@ class Young_Pattern:
         for i in range(generation):
             self.next_generation()
         return self.__state
+
+    def show(self):
+        """
+        matplotlib 出力
+        """
+        plt.imshow(self.__state, cmap='pink', vmin=0, vmax=1)
+        plt.show()
 
 
 BackendError = type('BackendError', (Exception,), {})
