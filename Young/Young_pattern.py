@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import signal
 import cv2
-from dots import Make_mask
+from Young.dots import Make_mask
 
 
 class Young_Pattern:
@@ -22,14 +22,18 @@ class Young_Pattern:
         self.__r2 = r2
         self.__w1 = w1
         self.__w2 = w2
-        self.__state = self.init_state(init_alive_prob)
+        self.__state = self.init_state(self.__width, self.__height, init_alive_prob)
 
-    def init_state(self, init_alive_prob=0.5):
+    def init_state(self, width=__width, height=__height, init_alive_prob=0.5):
         """
         初期化
+        :param height: 格子の横幅
+        :param width: 格子の縦幅
         :param init_alive_prob: percentage of the number of initial black
         :return: ndarray  state
         """
+        self.__width = width
+        self.__height = height
         N = self.__width * self.__height
         v = np.array(np.random.rand(N) + init_alive_prob, dtype=int)
         self.__state = v.reshape(self.__height, self.__width)
@@ -81,7 +85,6 @@ class Young_Pattern:
         return self.__state
 
 
-
 BackendError = type('BackendError', (Exception,), {})
 
 
@@ -114,7 +117,7 @@ def main():
         YP.next_generation()
         prop_val = cv2.getWindowProperty(winname, cv2.WND_PROP_ASPECT_RATIO)
         if ret == ord('r'):
-            YP.init_state(0.08)
+            YP.init_state(init_alive_prob=0.08)
         if ret == ord('s'):
             wait = min(wait * 2, 1000)
         if ret == ord('f'):
