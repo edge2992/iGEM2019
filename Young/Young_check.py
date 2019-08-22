@@ -1,6 +1,8 @@
 from Young.Young_pattern import Young_Pattern
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
 
 
 class Young_Check(Young_Pattern):
@@ -14,7 +16,8 @@ class Young_Check(Young_Pattern):
     def check(self, width=100, height=100, generation=30):
         self.init_state(width, height)
         num = self.sum(generation)
-        return num < width*height*0.9 or num > width*height*0.1
+        # return width * height * 0.9 > num > width * height * 0.1
+        return num * 1.0 / (width * height)
 
     def check_plot(self):
         x = [0]
@@ -26,6 +29,38 @@ class Young_Check(Young_Pattern):
         # self.show()
         plt.plot(x, y, 'ro')
         plt.show()
+
+
+def heat_map(para1_name, para1, para2_name, para2):
+    param_df = ({'r1': 3,
+                 'r2': 6,
+                 'w1': 1.0,
+                 'w2': -0.3,
+                 'init_alive_prob': 0.08})
+
+    df = pd.DataFrame({para1_name: [],
+                       para2_name: [],
+                       'score': []})
+
+    for aa in para1:
+        for bb in para2:
+            param_df[para1_name] = aa
+            param_df[para2_name] = bb
+            # print(param_df.values)
+            tmp_se = pd.Series([aa, bb,
+                                Young_Check(param_df['r1'], param_df['r2'], param_df['w1'], param_df['w2'],
+                                            param_df['init_alive_prob']).check(25, 25)],
+                               index=[para1_name, para2_name, 'score'])
+            df = df.append(tmp_se, ignore_index=True)
+    print(df)
+    df_pivot = pd.pivot_table(data=df, values='score',
+                              columns=para1_name, index=para2_name, aggfunc=np.mean)
+    sns.heatmap(df_pivot, cmap='Blues', annot=True)
+    plt.savefig('../data/' + para1_name + '_' + para2_name + '.png')
+    plt.show()
+
+    plt.close('all')
+    return df
 
 
 def show_list_YP(YP, width=5, height=5):
@@ -52,10 +87,7 @@ def change_r1_w1_YP():
 
 
 def main():
-
-    YC = Young_Check(3, 6, 1.0, -0.30, 0.08)
-    YC.check_plot()
-    print(YC.check())
+    heat_map('w1', np.arange(0.7, 1.3, 0.1), 'w2', np.arange(-0.5, -0., 0.1))
 
     # change_r1_w1_YP()
     # textname = "../data/save.txt"
