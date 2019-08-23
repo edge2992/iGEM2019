@@ -99,10 +99,11 @@ def main():
     Mos = Mosaic()
     Mos.mosaic(image)
     # Mos.trim(left=0.2, right=0.5, top=0.2, bottom=0.5)
-    Mos.make_blank()
+    # Mos.make_blank()
     Mos.show()
     Mos.save(save_img)
 
 
 if __name__ == '__main__':
     main()
+    exit()
