@@ -10,11 +10,14 @@ class Mosaic:
     output_width = 400
     threshold = 180
 
-    def __init__(self, filename, width=output_width, threshold_num=threshold):
+    def __init__(self, width=output_width, threshold_num=threshold):
         self.output_width = width
         self.threshold = threshold_num
         self.th = np.zeros((self.output_width, self.output_width))
-        self.mosaic(filename)
+        # self.mosaic(filename)
+
+    def set_th(self, th):
+        self.th = th
 
     def mosaic(self, filename):
         """
@@ -84,6 +87,7 @@ class Mosaic:
         np.savetxt(filename, self.th, "%d")
 
     def show(self):
+        plt.figure()
         plt.imshow(self.th)
         plt.show()
 
@@ -92,7 +96,8 @@ class Mosaic:
 def main():
     image = "img/fingerprint.png"
     save_img = "../data/save.txt"
-    Mos = Mosaic(image)
+    Mos = Mosaic()
+    Mos.mosaic(image)
     # Mos.trim(left=0.2, right=0.5, top=0.2, bottom=0.5)
     Mos.make_blank()
     Mos.show()
