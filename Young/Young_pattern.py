@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 
 class Young_Pattern:
-    __width = 300  # 格子の横幅
-    __height = 300  # 格子の縦幅
+    width = 300  # 格子の横幅
+    height = 300  # 格子の縦幅
 
     def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
         """
@@ -23,9 +23,9 @@ class Young_Pattern:
         self.__r2 = r2
         self.__w1 = w1
         self.__w2 = w2
-        self.state = self.init_state(self.__width, self.__height, init_alive_prob)
+        self.state = self.init_state(self.width, self.height, init_alive_prob)
 
-    def init_state(self, width=__width, height=__height, init_alive_prob=0.5):
+    def init_state(self, width=width, height=height, init_alive_prob=0.5):
         """
         初期化
         :param height: 格子の横幅
@@ -33,11 +33,11 @@ class Young_Pattern:
         :param init_alive_prob: percentage of the number of initial black
         :return: ndarray  state
         """
-        self.__width = width
-        self.__height = height
-        N = self.__width * self.__height
+        self.width = width
+        self.height = height
+        N = self.width * self.height
         v = np.array(np.random.rand(N) + init_alive_prob, dtype=int)
-        self.state = v.reshape(self.__height, self.__width)
+        self.state = v.reshape(self.height, self.width)
         return self.state
 
     def next_generation(self):
@@ -67,6 +67,11 @@ class Young_Pattern:
         """
         if cv2.os.path.exists(filename):
             self.state = np.loadtxt(filename)
+            self.width = self.state.shape[0]
+            self.height = self.state.shape[1]
+        else:
+            print("file is not existed")
+        return self.state
 
     def save_text(self, filename):
         """
@@ -94,10 +99,10 @@ class Young_Pattern:
         plt.show()
 
     def get_width(self):
-        return self.__width
+        return self.width
 
     def get_height(self):
-        return self.__height
+        return self.height
 
 
 BackendError = type('BackendError', (Exception,), {})
