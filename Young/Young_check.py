@@ -6,20 +6,36 @@ import seaborn as sns
 
 
 class Young_Check(Young_Pattern):
+    # Todo: チューリングパターンをパラメーターごとに一覧表示
     def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
         super(Young_Check, self).__init__(r1, r2, w1, w2, init_alive_prob)
 
     def sum(self, generation=2):
+        """
+        stateの1の数を足す
+        :param generation:
+        :return:
+        """
         C = self.far_generation(generation)
         return C.sum()
 
     def check(self, width=100, height=100, generation=30):
+        """
+        黒の部分の割合をだす（0~1）
+        :param width: stateの横幅
+        :param height: stateの縦幅
+        :param generation: 何世代後？
+        :return:
+        """
         self.init_state(width, height)
         num = self.sum(generation)
         # return width * height * 0.9 > num > width * height * 0.1
         return num * 1.0 / (width * height)
 
     def check_plot(self):
+        """
+        plotを出力して収束を確認する
+        """
         x = [0]
         y = [self.init_state(100, 100).sum()]
         # self.show()
@@ -32,6 +48,14 @@ class Young_Check(Young_Pattern):
 
 
 def heat_map(para1_name, para1, para2_name, para2):
+    """
+    ヒートマップを作成する関数
+    :param para1_name: パラメータの名前
+    :param para1: 実験するパラメーターの幅のarray
+    :param para2_name: パラメータの名前
+    :param para2: 実験するパラメーターの幅のarray
+    :return:
+    """
     param_df = ({'r1': 3,
                  'r2': 6,
                  'w1': 1.0,
