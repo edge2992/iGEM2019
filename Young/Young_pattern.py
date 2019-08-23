@@ -18,12 +18,12 @@ class Young_Pattern:
         :param w2: parameter of outer circle
         :param init_alive_prob: percentage of the number of initial black
         """
-        self.__mask = Make_mask(r1, r2, w1, w2)
+        self.mask = Make_mask(r1, r2, w1, w2)
         self.__r1 = r1
         self.__r2 = r2
         self.__w1 = w1
         self.__w2 = w2
-        self.__state = self.init_state(self.__width, self.__height, init_alive_prob)
+        self.state = self.init_state(self.__width, self.__height, init_alive_prob)
 
     def init_state(self, width=__width, height=__height, init_alive_prob=0.5):
         """
@@ -37,17 +37,17 @@ class Young_Pattern:
         self.__height = height
         N = self.__width * self.__height
         v = np.array(np.random.rand(N) + init_alive_prob, dtype=int)
-        self.__state = v.reshape(self.__height, self.__width)
-        return self.__state
+        self.state = v.reshape(self.__height, self.__width)
+        return self.state
 
     def next_generation(self):
         """
         次の世代にstateを更新する
         :return: ndarray  state
         """
-        N = signal.correlate2d(self.__state, self.__mask, mode="same", boundary="wrap")
-        self.__state = N > 0
-        return self.__state
+        N = signal.correlate2d(self.state, self.mask, mode="same", boundary="wrap")
+        self.state = N > 0
+        return self.state
 
     def to_image(self, w=800, h=800):
         """
@@ -56,7 +56,7 @@ class Young_Pattern:
         :param h: resize to display by cv2
         :return: cv2
         """
-        img = np.array(self.__state, dtype=np.uint8) * 255
+        img = np.array(self.state, dtype=np.uint8) * 255
         img = cv2.resize(img, (w, h), interpolation=cv2.INTER_NEAREST)
         return img
 
@@ -66,14 +66,14 @@ class Young_Pattern:
         :param filename:
         """
         if cv2.os.path.exists(filename):
-            self.__state = np.loadtxt(filename)
+            self.state = np.loadtxt(filename)
 
     def save_text(self, filename):
         """
         ndarrayをファイルに保存する
         :param filename:
         """
-        np.savetxt(filename, self.__state, "%d")
+        np.savetxt(filename, self.state, "%d")
 
     def far_generation(self, generation):
         """
@@ -83,14 +83,21 @@ class Young_Pattern:
         """
         for i in range(generation):
             self.next_generation()
-        return self.__state
+        return self.state
 
     def show(self):
         """
         matplotlib 出力
         """
-        plt.imshow(self.__state, cmap='pink', vmin=0, vmax=1)
+        plt.figure()
+        plt.imshow(self.state, cmap='pink', vmin=0, vmax=1)
         plt.show()
+
+    def get_width(self):
+        return self.__width
+
+    def get_height(self):
+        return self.__height
 
 
 BackendError = type('BackendError', (Exception,), {})
