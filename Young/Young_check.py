@@ -56,6 +56,8 @@ def heat_map(para1_name, para1, para2_name, para2):
     :param para2: 実験するパラメーターの幅のarray
     :return:
     """
+    pd.options.display.float_format = '{:.2f}'.format
+    pd.options.display.float_format = '{:.2f}'.format
     param_df = ({'r1': 3,
                  'r2': 6,
                  'w1': 1.0,
@@ -77,9 +79,14 @@ def heat_map(para1_name, para1, para2_name, para2):
                                index=[para1_name, para2_name, 'score'])
             df = df.append(tmp_se, ignore_index=True)
     print(df)
+
+    print(type(param_df['w1']))
     df_pivot = pd.pivot_table(data=df, values='score',
                               columns=para1_name, index=para2_name, aggfunc=np.mean)
-    sns.heatmap(df_pivot, cmap='Blues', annot=True)
+    sns.heatmap(df_pivot, cmap='Blues', annot=True, fmt='.2f')
+    plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))  # y軸小数点以下1桁表示
+    plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.1f'))  # y軸小数点以下1桁表示
+    plt.title('r1={0:.2g} r2={1:.2g} w1=xx w2=xx gen={2:.2g}'.format(3, 6, 30), fontsize=9)
     plt.savefig('../data/' + para1_name + '_' + para2_name + '.png')
     plt.show()
 
@@ -95,23 +102,22 @@ def show_list_YP(YP, width=5, height=5):
 
 
 def change_r1_w1_YP():
-    textname = "../data/save.txt"
-    count = 0
     a = np.arange(3, 4, 0.2)
     b = np.arange(0.5, 1.0, 0.1)
-    for r1 in a:
-        for w1 in b:
-            count += 1
+    fig, ax = plt.subplots(ncols=a.size, nrows=b.size,
+                           sharex="col", sharey="all",
+                           facecolor="lightgray")
+    for aline, r1 in zip(ax, a):
+        for elem, w1 in zip(aline, b):
             YP = Young_Pattern(r1, r1 * 2, w1, -0.25, 0.08)
-            # YP.init_state(50, 50)
-            YP.load_text(textname)
-            plt.subplot(a.size, b.size, count)
-            plt.imshow(YP.far_generation(20), cmap='pink', vmin=0, vmax=1)
+            YP.init_state(50, 50)
+            elem.imshow(YP.far_generation(20), cmap='pink')
     plt.show()
 
 
 def main():
     heat_map('w1', np.arange(0.7, 1.3, 0.1), 'w2', np.arange(-0.5, -0., 0.1))
+    # change_r1_w1_YP()
 
     # change_r1_w1_YP()
     # textname = "../data/save.txt"

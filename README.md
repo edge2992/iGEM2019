@@ -12,7 +12,6 @@
 - picture_edit/mosaic_pic 画像の編集
 - Young/Young_pattern チューリングパターン
 - Young/Young_check チェック用便利関数
-- Young/Young_check チェック用便利関数
 - Young/Young_finger 画像を引っ張ったりノイズを出して指紋に近づける
 - Young/Young_mask 大きなマスクをかけてみる
 
