@@ -50,7 +50,7 @@ class Young_Finger(Young_Check):
         self.state = N > 0
         return self.state
 
-    def show_ini_end(self, filename, gen=30):
+    def show_ini_end(self, load_filename, save_filename, gen=30):
         fig, ax = plt.subplots(ncols=2,
                                sharex="col", sharey="all",
                                facecolor="lightgray")
@@ -59,7 +59,7 @@ class Young_Finger(Young_Check):
         ax[0].set_title("initial state ", fontsize=7)
         ax[1].imshow(self.far_generation(gen), cmap='pink')
         ax[1].set_title("generation={0:.2g} ".format(gen), fontsize=7)
-        plt.savefig("../data/compare_finger_" + filename + ".png")
+        plt.savefig("../data/compare_finger_" + save_filename + ".png")
         plt.show()
 
 
@@ -88,9 +88,12 @@ def change(r_fn, r_rd):
 
 
 def main():
-    filename = "../data/save_big.txt"
+    # ここには書かないようにする
+    filename = "../data/save.txt"
+    file = "fing01"
     YP = Young_Finger(filename, 3, 6, 16.0, -5.0, 0.08)
-    YP.show_ini_end("big")
+    YP.check_plot(file)
+    # YP.show_ini_end("big")
     # gen = 30
     # r1 = 3
     # r2 = 6

@@ -53,19 +53,20 @@ class Young_Check(Young_Pattern):
         # return width * height * 0.9 > num > width * height * 0.1
         return num * 1.0 / (width * height)
 
-    def show_ini_end(self, filename,  gen=30):
+    def show_ini_end(self, load_filename, save_filename,  gen=30):
         fig, ax = plt.subplots(ncols=2,
                                sharex="col", sharey="all",
                                facecolor="lightgray")
         fig.suptitle('r1={0:.2g} r2={1:.2g} w1={2:.2g} w2={3:.2g} gen={4:.2g}'.format(self.r1, self.r2, self.w1, self.w2, gen), fontsize=9)
-        ax[0].imshow(self.init_state(), cmap='pink')
+        # ax[0].imshow(self.init_state(), cmap='pink')
+        ax[0].imshow(self.load_text(load_filename), cmap='pink')
         ax[0].set_title("initial state ", fontsize=7)
         ax[1].imshow(self.far_generation(gen), cmap='pink')
         ax[1].set_title("generation={0:.2g} ".format(gen), fontsize=7)
-        plt.savefig("../data/compare_" + filename + ".png")
+        plt.savefig("../data/compare_" + save_filename + ".png")
         plt.show()
 
-    def check_plot(self):
+    def check_plot(self, filename):
         """
         plotを出力して収束を確認する
         """
@@ -78,6 +79,10 @@ class Young_Check(Young_Pattern):
             x.append(i)
         # self.show()
         plt.plot(x, y, 'ro')
+        plt.title(
+            'r1={0:.2g} r2={1:.2g} w1={2:.2g} w2={3:.2g}'.format(self.r1, self.r2, self.w1, self.w2),
+            fontsize=9)
+        plt.savefig("../data/plot_" + filename + ".png")
         plt.show()
 
     def show_cv2(self):
@@ -181,8 +186,10 @@ def change_r1_w1_YP():
 
 
 def main():
-    YP = Young_Check(3, 6, 16.0, -5.0, 0.08)
-    YP.show_ini_end()
+    load_filename = "../data/save_big.txt"
+    YP = Young_Check(3, 6, 1.0, -0.3, 0.08)
+
+    YP.show_ini_end(load_filename, "not random")
     # heat_map('w1', np.arange(0, 30, 0.5), 'w2', np.arange(-10.0, 0., 0.5))
     # change_r1_w1_YP()
 
