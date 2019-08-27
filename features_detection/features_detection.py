@@ -3,11 +3,11 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-import opencv.zhang_suen as thinning
+# import features_detection.zhang_suen as thinning
 
-img = cv2.imread("./opencv/fingerprint.png", 0)
+img = cv2.imread("fingerprint.png", 0)
 h, w = img.shape
-img = cv2.resize(img, (int(h * 0.5), int(w * 0.5)))
+img = cv2.resize(img, (int(h * 1), int(w * 1)))
 img = cv2.medianBlur(img, 5)
 img = cv2.GaussianBlur(img, (5, 5), 0)
 
@@ -28,15 +28,15 @@ plt.show()
 # th = cv2.bitwise_not(th)
 
 kernel = np.ones((3, 3), np.uint8)
-# erosion = cv2.morphologyEx(th, cv2.MORPH_CLOSE, kernel)
+erosion = cv2.morphologyEx(th, cv2.MORPH_CLOSE, kernel)
 erosion = cv2.erode(erosion, kernel, iterations=1)
 
 plt.imshow(erosion)
 plt.title("erosion")
 plt.show()
 
-thined = thinning.ZhangSuen(erosion)
-# thined = cv2.ximgproc.thinning(th)
+# thined = thinning.ZhangSuen(erosion)
+thined = cv2.ximgproc.thinning(th)
 
 plt.imshow(thined, cmap="gray")
 plt.title("thined")
