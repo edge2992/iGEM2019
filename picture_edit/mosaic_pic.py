@@ -95,7 +95,7 @@ class Mosaic:
 # thのサイズが合わない気がする
 def main():
     image = "img/fingerprint.png"
-    save_img = "../data/save.txt"
+    save_img = "../data/save_big.txt"
     Mos = Mosaic()
     Mos.mosaic(image)
     # Mos.trim(left=0.2, right=0.5, top=0.2, bottom=0.5)
