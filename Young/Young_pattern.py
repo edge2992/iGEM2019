@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 class Young_Pattern:
     width = 300  # 格子の横幅
     height = 300  # 格子の縦幅
+    generation = 0
 
     def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
         """
@@ -23,6 +24,7 @@ class Young_Pattern:
         self.r2 = r2
         self.w1 = w1
         self.w2 = w2
+        self.generation = 0
         self.state = self.init_state(self.width, self.height, init_alive_prob)
 
     def init_state(self, width=width, height=height, init_alive_prob=0.5):
@@ -38,6 +40,7 @@ class Young_Pattern:
         N = self.width * self.height
         v = np.array(np.random.rand(N) + init_alive_prob, dtype=int)
         self.state = v.reshape(self.height, self.width)
+        self.generation = 0
         return self.state
 
     def next_generation(self):
@@ -47,6 +50,7 @@ class Young_Pattern:
         """
         N = signal.correlate2d(self.state, self.mask, mode="same", boundary="wrap")
         self.state = N > 0
+        self.generation += 1
         return self.state
 
     def to_image(self, w=800, h=800):
@@ -69,6 +73,7 @@ class Young_Pattern:
             self.state = np.loadtxt(filename)
             self.width = self.state.shape[0]
             self.height = self.state.shape[1]
+            self.generation = 0
         else:
             print("file is not existed")
         return self.state
@@ -90,12 +95,13 @@ class Young_Pattern:
             self.next_generation()
         return self.state
 
-    def show(self):
+    def save_img(self, filename):
         """
-        matplotlib 出力
+        matplotlib 出力と保存
         """
         plt.figure()
         plt.imshow(self.state, cmap='pink', vmin=0, vmax=1)
+        plt.savefig(filename + ".png")
         plt.show()
 
     def get_width(self):
