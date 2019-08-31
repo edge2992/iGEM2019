@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 # import features_detection.zhang_suen as thinning
 
-img = cv2.imread("fingerprint.png", 0)
+img = cv2.imread("features_detection/fingerprint.png", 0)
 h, w = img.shape
 img = cv2.resize(img, (int(h * 1), int(w * 1)))
 img = cv2.medianBlur(img, 5)
@@ -36,32 +36,58 @@ plt.title("erosion")
 plt.show()
 
 # thined = thinning.ZhangSuen(erosion)
-thined = cv2.ximgproc.thinning(th)
+
+height, width = img.shape
+thined = np.zeros((height, width), np.uint8)
+thined = cv2.ximgproc.thinning(th,thined,cv2.ximgproc.THINNING_GUOHALL)
 
 plt.imshow(thined, cmap="gray")
 plt.title("thined")
 plt.show()
 
-# thined
-# rows, columns = thined.shape
-# feature_points = np.zeros((rows, columns))
-# for x in range(1, rows - 1):
-#     for y in range(1, columns - 1):
-#         if thined[x][y] == 1:
-#             neighbour_points = thined[x-1][y-1] + thined[x][y-1] + thined[x+1][y-1] +thined[x-1][y] + thined[x+1][y] + thined[x-1][y+1] + thined[x][y+1] + thined[x+1][y+1]
-#             if (neighbour_points == 1 || neighbour_points == 3):
-#                 feature_points[x][y] = neighbour_points
-
-
 # gray1 = cv2.cvtColor(thined, cv2.COLOR_BGR2GRAY)
-akaze = cv2.AKAZE_create()
-kp1 = akaze.detect(thined)
-fetures = cv2.drawKeypoints(thined, kp1, None, flags=4)
+# akaze = cv2.AKAZE_create()
+# kp1 = akaze.detect(thined)
+# fetures = cv2.drawKeypoints(thined, kp1, None, flags=4)
 
-plt.imshow(fetures)
-plt.title("fetures")
-plt.show()
+# plt.imshow(fetures)
+# plt.title("fetures")
+# plt.show()
 
-plt.imshow(fetures)
+# plt.imshow(fetures)
+# plt.title("fetures")
+# plt.savefig("result.png", dpi=3000)
+
+
+thined = thined.astype(np.uint32)
+height, width = thined.shape
+for y in range(0, height - 1):
+    for x in range(0, width - 1):
+        if y == 0 or y == height - 1 or x == 0 or x == width - 1:
+            thined[y][x] = 0
+
+neighbour_point_map = np.zeros((height, width), np.uint32)
+for y in range(1, height - 2):
+    for x in range(1, width - 2):
+        if thined[y][x] == 255:
+            neighbour_point = thined[y-1][x-1] + thined[y][x-1] + thined[y+1][x-1] +thined[y-1][x] + thined[y+1][x] + thined[y-1][x+1] + thined[y][x+1] + thined[y+1][x+1]
+            neighbour_point_map[y][x] = neighbour_point
+
+yellows = 0
+reds = 0
+
+plt.imshow(thined, cmap="gray")
+for y in range(1, height - 2):
+    for x in range(1, width - 2):
+        if neighbour_point_map[y][x] == 255:
+            plt.scatter(x, y, marker='.', linewidths=0.3, facecolor='None', edgecolors='yellow', alpha='0.5')
+            yellows += 1
+        if neighbour_point_map[y][x] == 765:
+            # if not ( neighbour_point_map[y-2][x-2] >= 765 or neighbour_point_map[y-2][x-1] >= 765 or neighbour_point_map[y-2][x] >= 765 or neighbour_point_map[y-1][x-2] >= 765 or neighbour_point_map[y-1][x-1] >= 765 or neighbour_point_map[y-1][x] >= 765 or neighbour_point_map[y][x-2] >= 765 or neighbour_point_map[y][x-1] >= 765 ):
+            if not ( neighbour_point_map[y-1][x-1] >= 765 or neighbour_point_map[y][x-1] >= 765 or neighbour_point_map[y+1][x-1] >= 765 or neighbour_point_map[y+1][x] >= 765 ):
+                plt.scatter(x, y, marker='.', linewidths=0.3,  facecolor='None', edgecolors='red', alpha='0.5')
+                reds += 1
 plt.title("fetures")
-plt.savefig("result.png")
+plt.savefig("result.png", dpi=1000)
+print("２分岐: " + str(yellows))
+print("３分岐: " + str(reds))
