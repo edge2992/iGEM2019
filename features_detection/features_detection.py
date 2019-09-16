@@ -1,11 +1,12 @@
 # featres_detection.py
 
 import cv2
+from cv2.ximgproc import *
 import numpy as np
 from matplotlib import pyplot as plt
 # import features_detection.zhang_suen as thinning
 
-img = cv2.imread("features_detection/fingerprint.png", 0)
+img = cv2.imread("fingerprint.png", 0)
 h, w = img.shape
 img = cv2.resize(img, (int(h * 1), int(w * 1)))
 
