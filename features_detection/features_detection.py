@@ -8,17 +8,20 @@ from matplotlib import pyplot as plt
 img = cv2.imread("features_detection/fingerprint.png", 0)
 h, w = img.shape
 img = cv2.resize(img, (int(h * 1), int(w * 1)))
+
+# 3*3の平均をとって平滑化
 img = cv2.medianBlur(img, 5)
-img = cv2.GaussianBlur(img, (5, 5), 0)
+img = cv2.GaussianBlur(img, (5, 5), 0)  #
 
 # ret, th = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+# 画像の閾値処理
 th = cv2.adaptiveThreshold(
     img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2
 )
 # th = cv2.adaptiveThreshold(
 #     img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
 # )
-
+# bit反転
 th = cv2.bitwise_not(th)
 
 plt.imshow(th)
@@ -27,8 +30,11 @@ plt.show()
 
 # th = cv2.bitwise_not(th)
 
+# モルフォロジー変換　クロージング
+# 膨張の後に収縮することで、小さな穴を埋めるのに役立つ
 kernel = np.ones((3, 3), np.uint8)
 erosion = cv2.morphologyEx(th, cv2.MORPH_CLOSE, kernel)
+# 収縮
 erosion = cv2.erode(erosion, kernel, iterations=1)
 
 plt.imshow(erosion)
@@ -39,6 +45,7 @@ plt.show()
 
 height, width = img.shape
 thined = np.zeros((height, width), np.uint8)
+# 細線化
 thined = cv2.ximgproc.thinning(th,thined,cv2.ximgproc.THINNING_GUOHALL)
 
 plt.imshow(thined, cmap="gray")
