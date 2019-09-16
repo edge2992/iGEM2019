@@ -71,8 +71,8 @@ class Young_Pattern:
         """
         if cv2.os.path.exists(filename):
             self.state = np.loadtxt(filename)
-            self.width = self.state.shape[0]
-            self.height = self.state.shape[1]
+            self.width = self.state.shape[1]
+            self.height = self.state.shape[0]
             self.generation = 0
         else:
             print("file is not existed")

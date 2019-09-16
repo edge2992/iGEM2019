@@ -49,8 +49,9 @@ def main():
     # ここには書かないようにする
     YM = Young_Mask(6, 16, 1.0, -0.3)
     YM.square_mask()
-    YM.far_generation(50)
-    YM.show()
+    YM.show_cv2()
+    # YM.far_generation(50)
+    # YM.show()
 
 
 if __name__ == "__main__":
