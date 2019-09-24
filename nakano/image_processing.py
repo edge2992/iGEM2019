@@ -106,6 +106,7 @@ def generate_features_map(img, *, debug=False):
             if y == 0 or y == height - 1 or x == 0 or x == width - 1:
                 img[y][x] = 0
     # 各ピクセルについて周囲のピクセルの値を調べる
+    img = img.astype(np.uint16)
     neighbour_point_map = np.zeros((height, width), np.uint16)
     for y in range(1, height - 2):
         for x in range(1, width - 2):
@@ -130,6 +131,30 @@ def generate_features_map(img, *, debug=False):
     if debug: print("end  : nakano.image_processing.generate_features_map")
     return result
 
+# 特徴点の座標を取得
+# features_map: 2次元配列(特徴点マップ)(0か1か10)(1は端点、10は三路分岐点)
+# 返り値: 端点の座標の配列([[x,y],[x,y],...])、三路分岐点の座標の配列([[x,y],[x,y],...])
+def list_features (features_map, *, debug=False):
+    if debug: print("start: nakano.image_processing.list_features")
+    height, width = features_map.shape
+    endpoints = []
+    trifurcations = []
+    for y in range(0, height - 1):
+        for x in range(0, width - 1):
+            if features_map[y][x] == 1: endpoints.append([x,y])
+            if features_map[y][x] == 10: trifurcations.append([x,y])
+    if debug: print("end  : nakano.image_processing.list_features")
+    return endpoints, trifurcations
+
+# 特徴点の数を取得
+# features_map: 2次元配列(特徴点マップ)(0か1か10)(1は端点、10は三路分岐点)
+# 返り値: 端点の数、三路分岐点の数
+def count_features (features_map, *, debug=False):
+    endpoints, trifurcations = list_features(features_map)
+    if debug: print("端点: " + str(len(endpoints)))
+    if debug: print("三路分岐点: " + str(len(trifurcations)))
+    return len(endpoints), len(trifurcations)
+
 if __name__ == '__main__':
     img = load_image_grayscale("./features_detection/fingerprint.png", debug=True)
     img = blur(img, debug=True)
@@ -137,4 +162,5 @@ if __name__ == '__main__':
     img = bitwise_not(img, debug=True)
     img = morphological_transformations(img, debug=True)
     img = thinning(img, debug=True)
-    img = generate_features_map(img, debug=True)
+    features_map = generate_features_map(img, debug=True)
+    count_features(features_map, debug=True)
