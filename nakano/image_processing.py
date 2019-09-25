@@ -98,7 +98,6 @@ def thinning(img, *, debug=False):
 # 返り値: 2次元配列(特徴点マップ)(0か1か10)(1は端点、10は三路分岐点)
 def generate_features_map(img, *, debug=False):
     if debug: print("start: nakano.image_processing.generate_features_map")
-    # img = img.astype(np.uint32)
     height, width = img.shape
     # 画面の端を0にする
     for y in range(0, height - 1):
