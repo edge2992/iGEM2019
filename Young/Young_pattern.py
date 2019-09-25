@@ -78,6 +78,18 @@ class Young_Pattern:
             print("file is not existed")
         return self.state
 
+    def load_ndarray(self, ndarray):
+        """
+        初期値としてndarrayを入れる
+        :param ndarray: 初期値
+        :return: state
+        """
+        self.state = ndarray
+        self.width = self.state.shape[1]
+        self.height = self.state.shape[0]
+        self.generation = 0
+        return self.state
+
     def save_text(self, filename):
         """
         ndarrayをファイルに保存する
