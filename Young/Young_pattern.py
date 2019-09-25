@@ -84,7 +84,7 @@ class Young_Pattern:
         :param ndarray: 初期値
         :return: state
         """
-        self.state = ndarray
+        self.state = ndarray.astype(np.float64)
         self.width = self.state.shape[1]
         self.height = self.state.shape[0]
         self.generation = 0
