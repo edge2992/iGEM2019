@@ -1,32 +1,20 @@
-import cv2
 from scipy import signal
 import numpy as np
-from Young.Young_check import Young_Check
 import matplotlib.pyplot as plt
 
+from Young.Young_pattern import Young_Pattern
 
-class Young_Finger(Young_Check):
-    __r_fn = 0.5
-    __r_rd = 5
 
-    def __init__(self, filename, r1, r2, w1, w2, init_alive_prob=0.5):
-        self.__filename = filename
-        super(Young_Check, self).__init__(r1, r2, w1, w2, init_alive_prob)
-        self.img_finger = self.load_text(filename)
+class Young_Finger(Young_Pattern):
+    r_fn = 0.01
+    r_rd = 5
+
+    def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
+        super().__init__(r1, r2, w1, w2, init_alive_prob)
+        self.img_finger = self.state
         self.__noise = np.zeros((self.width, self.height))
         self.noise()
         # print(self.__noise)
-
-    def init_state(self, width=120, height=120, init_alive_prob=0.5):
-        """
-        初期化
-        :param height: 格子の横幅
-        :param width: 格子の縦幅
-        :param init_alive_prob: percentage of the number of initial black
-        :return: ndarray  state
-        """
-        self.state = self.load_text(self.__filename)
-        return self.state
 
     def noise(self):
         N = self.width * self.height
@@ -34,11 +22,11 @@ class Young_Finger(Young_Check):
         self.__noise = v.reshape(self.height, self.width)
         return self.__noise
 
-    def set_r_fn(self, r):
-        self.__r_fn = r
+    def load_text(self, filename):
+        self.img_finger = super().load_text(filename)
 
-    def set_r_rd(self, r):
-        self.__r_rd = r
+    def load_ndarray(self, ndarray):
+        self.img_finger = super().load_ndarray(ndarray)
 
     def next_generation(self):
         """
@@ -46,7 +34,7 @@ class Young_Finger(Young_Check):
         :return: ndarray  state
         """
         N = signal.correlate2d(self.state, self.mask, mode="same", boundary="wrap")
-        N = N * (1 - self.__r_fn) + self.img_finger * self.__r_fn + self.noise() * self.__r_rd
+        N = N * (1 - self.r_fn) + self.img_finger * self.r_fn + self.noise() * self.r_rd
         self.state = N > 0
         self.generation += 1
         return self.state
@@ -58,8 +46,8 @@ class Young_Finger(Young_Check):
         fig.suptitle(
             'r1={0:.2g} r2={1:.2g} w1={2:.2g} w2={3:.2g} r_fn={4:.2g} r_rd={5:.2g} gen={6:.2g}'.format(self.r1, self.r2,
                                                                                                        self.w1, self.w2,
-                                                                                                       self.__r_fn,
-                                                                                                       self.__r_rd,
+                                                                                                       self.r_fn,
+                                                                                                       self.r_rd,
                                                                                                        gen), fontsize=9)
         ax[0].imshow(self.init_state(), cmap='pink')
         ax[0].set_title("initial state ", fontsize=7)

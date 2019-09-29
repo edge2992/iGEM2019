@@ -53,16 +53,15 @@ class Young_Pattern:
         self.generation += 1
         return self.state
 
-    def to_image(self, w=800, h=800):
+    def far_generation(self, generation):
         """
-        imageをcv2で出力する
-        :param w: resize to display by cv2
-        :param h: resize to display by cv2
-        :return: cv2
+        generation世代後にstateを変更する
+        :param generation: 世代数
+        :return:
         """
-        img = np.array(self.state, dtype=np.uint8) * 255
-        img = cv2.resize(img, (w, h), interpolation=cv2.INTER_NEAREST)
-        return img
+        for i in range(generation):
+            self.next_generation()
+        return self.state
 
     def load_text(self, filename):
         """
@@ -90,22 +89,23 @@ class Young_Pattern:
         self.generation = 0
         return self.state
 
+    def to_image(self, w=800, h=800):
+        """
+        imageをcv2で出力する
+        :param w: resize to display by cv2
+        :param h: resize to display by cv2
+        :return: cv2
+        """
+        img = np.array(self.state, dtype=np.uint8) * 255
+        img = cv2.resize(img, (w, h), interpolation=cv2.INTER_NEAREST)
+        return img
+
     def save_text(self, filename):
         """
         ndarrayをファイルに保存する
         :param filename:
         """
         np.savetxt(filename, self.state, "%d")
-
-    def far_generation(self, generation):
-        """
-        generation世代後にstateを変更する
-        :param generation: 世代数
-        :return:
-        """
-        for i in range(generation):
-            self.next_generation()
-        return self.state
 
     def save_img(self, filename):
         """
@@ -116,12 +116,57 @@ class Young_Pattern:
         plt.savefig(filename + ".png")
         plt.show()
 
-    def get_width(self):
-        return self.width
+    def show(self):
+        plt.figure()
+        plt.imshow(self.state, cmap='pink', vmin=0, vmax=1)
+        plt.show()
 
-    def get_height(self):
-        return self.height
+    def show_cv2(self):
+        winname = "Young Pattern"
+        # ret = 0
+        wait = 50
 
+        while True:
+            img = self.to_image()
+            cv2.imshow(winname, img)
+            ret = cv2.waitKey(wait)
+            self.next_generation()
+            # prop_val = cv2.getWindowProperty(winname, cv2.WND_PROP_ASPECT_RATIO)
+            if ret == ord('r'):
+                self.init_state(init_alive_prob=0.08)
+            if ret == ord('s'):
+                wait = min(wait * 2, 1000)
+            if ret == ord('f'):
+                wait = max(wait // 2, 10)
+            if ret == ord('q') or ret == 27:
+                break
+            if not is_visible(winname):
+                break
+            if ret == ord('w'):
+                self.save_text("../data/save.txt")
+            if ret == ord('l'):
+                self.load_text("../data/save.txt")
+        cv2.waitKey(1)  # macの都合
+        cv2.destroyAllWindows()
+        return 0
+
+BackendError = type('BackendError', (Exception,), {})
+
+
+def is_visible(winname):
+    # cv2の閉じるエラーを解決したい（未解決）
+    try:
+        ret = cv2.getWindowProperty(
+            winname, cv2.WND_PROP_VISIBLE
+        )
+
+        if ret == -1:
+            raise BackendError('Use Qt as backend to check whether window is visible or not.')
+
+        return bool(ret)
+
+    except cv2.error:
+        return False
 
 def main():
     YP = Young_Pattern(3, 6, 1.0, -0.3, 0.08)

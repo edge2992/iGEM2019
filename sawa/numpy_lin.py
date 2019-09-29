@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# よく考えたら、numpyの機能で十分だったのでいらない
+
 class Ndarray_Structure:
     width = 100
     height = 100
@@ -18,9 +20,16 @@ class Ndarray_Structure:
         状態を外から持ってくる
         :param th: ndarray
         """
-        self.th = th
+        self.th = th.astype(np.uint8)
         self.height = th.shape[0]
         self.width = th.shape[1]
+
+    def multiple(self, num):
+        """
+        (255,0)のndarrayに変換するため
+        :param num:
+        """
+        self.th = self.th * num
 
     def save(self, filename):
         """
