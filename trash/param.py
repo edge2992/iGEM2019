@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
-from Young.Young_check import Young_Check
+from trash.Young_check import Young_Check
 from Young.Young_finger import Young_Finger
-from Young.Young_pattern import Young_Pattern
 
 
 def change_w1_w2_YP(a_w1, a_w2):
