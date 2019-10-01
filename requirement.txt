@@ -11,3 +11,4 @@ pytz==2017.2
 scipy==0.19.1
 seaborn==0.9.0
 six==1.10.0
+pip l

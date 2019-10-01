@@ -1,10 +1,6 @@
-from Young.Young_check import Young_Check
+from trash.Young_check import Young_Check
 from scipy import signal
-from Young.Young_pattern import Young_Pattern
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
 
 from picture_edit.mosaic_pic import Mosaic
 
