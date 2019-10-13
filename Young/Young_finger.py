@@ -36,6 +36,7 @@ class Young_Finger(Young_Pattern):
         N = signal.correlate2d(self.state, self.mask, mode="same", boundary="wrap")
         N = N * (1 - self.r_fn) + self.img_finger * self.r_fn + self.noise() * self.r_rd
         self.state = N > 0
+        self.noise()
         self.generation += 1
         return self.state
 
@@ -85,7 +86,7 @@ def main():
     # ここには書かないようにする
     filename = "../data/save.txt"
     file = "fing01"
-    YP = Young_Finger(filename, 3, 6, 16.0, -5.0, 0.08)
+    YP = Young_Finger(filename, 3, 6, 16.0, -5.0)
     YP.check_plot(file)
     # YP.show_ini_end("big")
     # gen = 30
