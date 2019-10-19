@@ -155,7 +155,7 @@ def count_features (features_map, *, debug=False):
     return len(endpoints), len(trifurcations)
 
 if __name__ == '__main__':
-    img = load_image_grayscale("./features_detection/fingerprint.png", debug=True)
+    img = load_image_grayscale("../features_detection/fingerprint.png", debug=True)
     img = blur(img, debug=True)
     img = threshold(img, debug=True)
     img = bitwise_not(img, debug=True)
