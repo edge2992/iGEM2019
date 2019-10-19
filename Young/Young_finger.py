@@ -1,13 +1,22 @@
+import logging
+from datetime import datetime
+
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
 
 from Young.Young_pattern import Young_Pattern
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logging.StreamHandler().setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
+
 
 class Young_Finger(Young_Pattern):
     r_fn = 0.01
-    r_rd = 5
+    # r_rd = 5
+    r_rd = 0.5
 
     def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
         super().__init__(r1, r2, w1, w2, init_alive_prob)
@@ -18,6 +27,7 @@ class Young_Finger(Young_Pattern):
 
     def noise(self):
         N = self.width * self.height
+        # v = np.array(np.random.rand(N), dtype=float) * 2 - 1
         v = np.array(np.random.rand(N), dtype=float)
         self.__noise = v.reshape(self.height, self.width)
         return self.__noise
@@ -61,8 +71,11 @@ class Young_Finger(Young_Pattern):
 BackendError = type('BackendError', (Exception,), {})
 
 
-def change(r_fn, r_rd):
-    gen = 30
+def change(r_fn, r_rd, filename="../data/save.txt"):
+    # ランダムと引っ張りの具合の変数を調べる関数
+    # r_fnとr_rdには配列を入れる
+    # 10代後のパターンを表示する
+    gen = 10
     r1 = 3
     r2 = 6
     w1 = 16.0
@@ -71,14 +84,17 @@ def change(r_fn, r_rd):
                            sharex="col", sharey="all",
                            facecolor="lightgray")
     fig.suptitle('r1={0:.2g} r2={1:.2g} w1={2:.2g} w2={3:.2g} gen={4:.2g}'.format(r1, r2, w1, w2, gen), fontsize=9)
-    for aline, r1 in zip(ax, r_fn):
-        for elem, r2 in zip(aline, r_rd):
+    for aline, fn in zip(ax, r_fn):
+        for elem, rd in zip(aline, r_rd):
+            logging.debug("r_fn={0:.2g} r_rd={1:.2g} start".format(fn, rd))
             YP = Young_Finger(3, 6, 16.0, -5.0, 0.08)
-            YP.set_r_fn(r1)
-            YP.set_r_rd(r2)
+            YP.load_text(filename)
+            YP.r_fn = fn
+            YP.r_rd = rd
             elem.imshow(YP.far_generation(gen), cmap='pink')
-            elem.set_title("r_fn={0:.2g} r_rd={1:.2g}".format(r1, r2), fontsize=7)
-    plt.savefig("finger_rfn_rrd.png")
+            elem.set_title("r_fn={0:.2g} r_rd={1:.2g}".format(fn, rd), fontsize=7)
+            logging.debug("r_fn={0:.2g} r_rd={1:.2g} end".format(fn, rd))
+    plt.savefig("finger_rfn_rrd" + str(int(datetime.now().timestamp() * (10 ** 3))) + ".png")
     plt.show()
 
 
@@ -86,8 +102,10 @@ def main():
     # ここには書かないようにする
     filename = "../data/save.txt"
     file = "fing01"
-    YP = Young_Finger(filename, 3, 6, 16.0, -5.0)
-    YP.check_plot(file)
+    YP = Young_Finger(3, 6, 16.0, -5.0)
+    YP.load_text(filename)
+    YP.far_generation(10)
+    # YP.check_plot(file)
     # YP.show_ini_end("big")
     # gen = 30
     # r1 = 3
@@ -104,11 +122,13 @@ def main():
     # # YF.check_plot()
     # YF.show_cv2()
     #
-    # r = np.array([20.0, 5.0, 1.0])
-    # r2 = np.array([0.5, 0.2, 0.1])
-    # change(r2, r)
+    # rd = np.array([20.0, 5.0, 1.0])
+    rd = np.array([1.0, 0.8, 0.5, 0.3])
+    fn = np.array([0.2, 0.01, 0.001])
+    # fn = np.array([0.01, 0.001, 0.0001])
+    change(fn, rd)
 
 
 if __name__ == "__main__":
     main()
-    exit()
+    # exit()

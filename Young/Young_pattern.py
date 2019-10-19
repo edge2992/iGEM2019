@@ -3,14 +3,21 @@ from scipy import signal
 import cv2
 from Young.dots import Make_mask
 import matplotlib.pyplot as plt
+import logging
+from datetime import datetime
 
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logging.StreamHandler().setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
 
 class Young_Pattern:
     width = 300  # 格子の横幅
     height = 300  # 格子の縦幅
     generation = 0
 
-    def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5):
+    def __init__(self, r1, r2, w1, w2, init_alive_prob=0.5, status=False):
         """
         コンストラクタ
         :param r1: radius of inner circle
@@ -19,7 +26,8 @@ class Young_Pattern:
         :param w2: parameter of outer circle
         :param init_alive_prob: percentage of the number of initial black
         """
-        self.mask = Make_mask(r1, r2, w1, w2)
+        logger.debug("__init__")
+        self.mask = Make_mask(r1, r2, w1, w2, side=21)
         self.r1 = r1
         self.r2 = r2
         self.w1 = w1
@@ -68,6 +76,7 @@ class Young_Pattern:
         初期値としてndarrayを他のファイルから取ってくる
         :param filename:
         """
+        logger.debug("load_text")
         if cv2.os.path.exists(filename):
             self.state = np.loadtxt(filename)
             self.width = self.state.shape[1]
@@ -96,6 +105,8 @@ class Young_Pattern:
         :param h: resize to display by cv2
         :return: cv2
         """
+        logger.debug("display by cv2")
+        logger.debug("generation=%d", self.generation)
         img = np.array(self.state, dtype=np.uint8) * 255
         img = cv2.resize(img, (w, h), interpolation=cv2.INTER_NEAREST)
         return img
@@ -105,18 +116,24 @@ class Young_Pattern:
         ndarrayをファイルに保存する
         :param filename:
         """
+        logger.debug("saved to %s", filename)
+        logger.debug("generation=%d", self.generation)
         np.savetxt(filename, self.state, "%d")
 
-    def save_img(self, filename):
+    def save_img(self, img_path="./image-"+str(int(datetime.now().timestamp()*(10**3)))+".png"):
         """
         matplotlib 出力と保存
         """
+        logger.debug("file saved to %s", img_path)
+        logger.debug("generation =", self.generation)
         plt.figure()
         plt.imshow(self.state, cmap='pink', vmin=0, vmax=1)
-        plt.savefig(filename + ".png")
+        plt.savefig(img_path)
         plt.show()
 
     def show(self):
+        logger.debug("display by pyplot")
+        logger.debug("generation=%d", self.generation)
         plt.figure()
         plt.imshow(self.state, cmap='pink', vmin=0, vmax=1)
         plt.show()
@@ -150,6 +167,7 @@ class Young_Pattern:
         cv2.destroyAllWindows()
         return 0
 
+
 BackendError = type('BackendError', (Exception,), {})
 
 
@@ -168,10 +186,12 @@ def is_visible(winname):
     except cv2.error:
         return False
 
+
 def main():
     YP = Young_Pattern(3, 6, 1.0, -0.3, 0.08)
+    YP.far_generation(10)
+    YP.show()
 
 
 if __name__ == "__main__":
     main()
-    exit()
